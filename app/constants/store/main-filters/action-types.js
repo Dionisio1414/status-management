@@ -1,0 +1,4 @@
+export const GET_CATEGORIES = 'GET_CATEGORIES';
+export const UPDATE_FORM = 'UPDATE_FORM';
+export const SUBMIT_FILTERS = 'SUBMIT_FILTERS';
+export const RESET_FILTERS = 'RESET_FILTERS';

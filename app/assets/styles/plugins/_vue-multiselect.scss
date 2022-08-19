@@ -1,0 +1,73 @@
+@import '~vue-multiselect/dist/vue-multiselect.min.css';
+
+.multiselect {
+  font-size: 1.4rem;
+  height: 3.4rem;
+  min-height: 3.4rem;
+  &--error {
+    .multiselect__tags {
+      border-color: $red;
+    }
+  }
+
+  &__tags {
+    border-color: $gray-400;
+    min-height: 3.4rem;
+    padding-top: .6rem
+  }
+
+  &__select {
+    width: 3rem;
+    height: 3.1rem;
+  }
+
+  &__single {
+    font-size: 1.4rem;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+
+  &__placeholder {
+    margin-bottom: 0;
+    padding-top: 0;
+  }
+
+  &__option {
+    white-space: normal;
+    overflow-wrap: break-word;
+
+    &--highlight {
+      background: $gray-200;
+      color: $black;
+    }
+
+    &--selected {
+      background: $gray-300;
+      color: $black;
+      &.multiselect__option--highlight {
+        background: $gray-300;
+        color: $black;
+      }
+    }
+
+  }
+
+  &--disabled {
+    opacity: .4;
+    .multiselect__select {
+      background: transparent;
+    }
+  }
+
+  &--active {
+    .multiselect__placeholder {
+      display: block;
+    }
+  }
+
+  &__content {
+    &-wrapper {
+      overflow-x: hidden;
+    }
+  }
+}

@@ -1,0 +1,98 @@
+<template>
+  <b-modal
+    :id="modalName"
+    :visible="show"
+    static
+    scrollable
+    hide-footer
+    @hidden="closeHandler"
+  >
+    <template #modal-header="{ close }">
+      <div class="d-flex align-items-center w-100">
+        <h5 class="modal-title">Stark logs: {{ customProps.title }}</h5>
+        <button
+          type="button"
+          style="font-size: 2rem"
+          class="close"
+          @click="close"
+        >
+          ×
+        </button>
+      </div>
+    </template>
+
+    <history-logs-table :loading="loading" :items="items" :fields="fields" />
+  </b-modal>
+</template>
+
+<script>
+import { mapActions, mapState } from 'vuex';
+
+import HistoryLogsTable from '@/components/history-logs-table.vue';
+
+import { FIELDS_LOGS_TABLE } from '@/constants/fields-table';
+import { MODAL_CLOSE } from '@/constants/modals/modal-event-types';
+
+import { GET_PRODUCT_LOGS } from '@/constants/store/product/action-types';
+
+import { ALERT_EVENT_SHOW } from '@/constants/alert/alert-event-types';
+import { DANGER } from '@/constants/alert/alert-types';
+
+export default {
+  name: 'ModalLogs',
+
+  components: { HistoryLogsTable },
+
+  props: {
+    modalName: {
+      type: String,
+      required: true,
+    },
+
+    show: {
+      type: Boolean,
+      required: true,
+    },
+
+    customProps: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  data: () => ({
+    fields: FIELDS_LOGS_TABLE,
+  }),
+
+  computed: {
+    ...mapState('product', {
+      items: (state) => state.productLogs,
+      loading: (state) => state.loading,
+    }),
+  },
+
+  methods: {
+    ...mapActions('product', [GET_PRODUCT_LOGS]),
+
+    closeHandler(callback) {
+      const typeCallback = callback.vueTarget
+        ? callback.vueTarget.hide
+        : callback;
+
+      this.$bus.$emit(MODAL_CLOSE, typeCallback);
+    },
+  },
+
+  created() {
+    try {
+      this[GET_PRODUCT_LOGS](this.customProps.id);
+    } catch (error) {
+      this.$bus.$emit(ALERT_EVENT_SHOW, {
+        variant: DANGER,
+        show: true,
+        content: error?.message,
+      });
+    }
+  },
+};
+</script>

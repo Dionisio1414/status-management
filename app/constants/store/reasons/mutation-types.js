@@ -1,0 +1,1 @@
+export const SET_REASONS_DATA = 'SET_REASONS_DATA';
