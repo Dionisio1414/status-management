@@ -12,7 +12,6 @@ import './assets/styles/main.scss';
 Vue.use(BootstrapVue);
 Vue.use(VueEventBus);
 
-Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
 new Vue({

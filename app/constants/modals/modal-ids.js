@@ -5,3 +5,4 @@ export const MODAL_STATUS_REASONS = 'modal-status-reasons';
 export const MODAL_COMMENTS = 'modal-comments';
 export const MODAL_CANCELING_REASONS = 'modal-canceling-reason';
 export const MODAL_LOGS = 'modal-logs';
+export const MODAL_ROCK = 'modal-rock';

@@ -10,6 +10,15 @@
     }
   }
 
+  &--ellipsis {
+    .multiselect__single {
+      max-width: 15rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+
   &__tags {
     border-color: $gray-400;
     min-height: 3.4rem;

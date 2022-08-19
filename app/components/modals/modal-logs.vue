@@ -21,12 +21,17 @@
       </div>
     </template>
 
-    <history-logs-table :loading="loading" :items="items" :fields="fields" />
+    <history-logs-table
+      :loading="loading"
+      :items="cloneItems"
+      :fields="fields"
+    />
   </b-modal>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import cloneDeep from 'lodash.clonedeep';
 
 import HistoryLogsTable from '@/components/history-logs-table.vue';
 
@@ -62,6 +67,7 @@ export default {
 
   data: () => ({
     fields: FIELDS_LOGS_TABLE,
+    cloneItems: [],
   }),
 
   computed: {
@@ -83,9 +89,11 @@ export default {
     },
   },
 
-  created() {
+  async created() {
     try {
-      this[GET_PRODUCT_LOGS](this.customProps.id);
+      await this[GET_PRODUCT_LOGS](this.customProps.id);
+
+      this.cloneItems = cloneDeep(this.items);
     } catch (error) {
       this.$bus.$emit(ALERT_EVENT_SHOW, {
         variant: DANGER,

@@ -46,13 +46,13 @@ export default {
     customLabelFields(value) {
       const option = this.fieldsOptions.find((item) => item.value === value);
 
-      return option.name || '';
+      return option.name ? `${option.name} - Поле` : '';
     },
 
     customLabelCategoriesList(value) {
       const option = this.categoriesList.find((item) => item.value === value);
 
-      return option.name || '';
+      return option.name ? `${option.name} - Категория` : '';
     },
 
     customLabelgenericArticleId(value) {
@@ -64,7 +64,7 @@ export default {
     customLabelIsRock(value) {
       const option = this.isRockOptions.find((item) => item.value === value);
 
-      return option.name || '';
+      return option.name ? `${option.name} - Неликвид` : '';
     },
 
     customLabelSurchargeChecked(value) {
@@ -72,7 +72,7 @@ export default {
         (item) => item.value === value
       );
 
-      return option.name || '';
+      return option.name ? `${option.name} - Большегруз` : '';
     },
 
     customLabelIsPurchase(value) {
@@ -80,13 +80,13 @@ export default {
         (item) => item.value === value
       );
 
-      return option.name || '';
+      return option.name ? `${option.name} - К заказу` : '';
     },
 
     customLabelIsPattern(value) {
       const option = this.isPatternOptions.find((item) => item.value === value);
 
-      return option.name || '';
+      return option.name ? `${option.name} - Запонтентован` : '';
     },
   },
 };

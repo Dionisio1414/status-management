@@ -13,6 +13,7 @@ export default {
     'modal-canceling-reason': () =>
       import('@/components/modals/modal-canceling-reason.vue'),
     'modal-logs': () => import('@/components/modals/modal-logs.vue'),
+    'modal-rock': () => import('@/components/modals/modal-rock.vue'),
   },
 
   data: () => ({

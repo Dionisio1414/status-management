@@ -4,6 +4,7 @@ import getters from './getters';
 
 const state = {
   categories: [],
+  file: null,
 
   form: {
     search: null,

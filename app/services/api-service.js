@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 class ApiService {
-  constructor(baseURL) {
+  constructor(baseURL, responseType = null) {
     this.$http = axios.create({
       baseURL,
       headers: {
         'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
       },
+      responseType,
     });
   }
 
@@ -68,6 +69,18 @@ class ApiService {
 
   async addProductComment(params) {
     const response = await this.$http.post('add', params);
+
+    return response.data;
+  }
+
+  async exportProducts(params) {
+    const response = await this.$http.get('export', { params });
+
+    return response.data;
+  }
+
+  async deletePriceRock(id) {
+    const response = await this.$http.post(`delete/${id}`);
 
     return response.data;
   }

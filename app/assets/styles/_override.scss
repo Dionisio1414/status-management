@@ -190,3 +190,9 @@
 .default-form-group label { font-size: 1.4rem; }
 
 .b-table-details .table { margin-bottom: 0; }
+
+.custom-switch {
+  .custom-control-label {
+    cursor: pointer;
+  }
+}

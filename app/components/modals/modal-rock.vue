@@ -3,12 +3,10 @@
     <template #modal-header="{ close }">
       <div class="d-flex align-items-center w-100">
         <h3 class="modal-title" v-html="customProps.title" />
-
         <button
           type="button"
           style="font-size: 2rem"
           class="close"
-          :disabled="loading"
           @click="close"
         >
           ×
@@ -23,48 +21,45 @@
         :show="loading"
       />
 
-      <b-form id="form-reasons" @submit.prevent="applyFormHandler(hide)">
-        <b-form-group class="default-form-group">
-          <b-form-checkbox
-            v-model="form.checked"
-            class="default-checkbox default-checkbox--order"
-            plain
-          >
-            Отключение навсегда:
-          </b-form-checkbox>
+      <b-form
+        id="form-rock"
+        @submit.prevent="applyFormHandler(hide)"
+        style="min-height: 24rem"
+      >
+        <b-form-group
+          class="default-form-group"
+          label="Наценка:"
+          label-for="profit"
+        >
+          <b-input-group append="%">
+            <b-form-input
+              v-model.number="form.rock"
+              type="number"
+              id="profit"
+              class="form-control-default"
+              :state="$v.form.rock.$error ? false : null"
+              :disabled="loading"
+              placeholder="Наценка %"
+            />
+          </b-input-group>
         </b-form-group>
 
         <b-form-group
           class="default-form-group"
-          label="Причина отключения:"
-          label-for="reasons-list"
+          label="Уровни:"
+          label-for="levels"
         >
           <multiselect
-            id="reasons-list"
-            v-model="form.reasonId"
-            :class="{ 'multiselect--error': $v.form.reasonId.$error }"
-            :options="statusReasonsOptions"
+            id="levels"
+            v-model="form.level"
+            :class="{ 'multiselect--error': $v.form.level.$error }"
+            :options="levelsOptions"
             :searchable="false"
             :show-labels="false"
             :allow-empty="false"
-            :custom-label="customLabelMainReasons"
-            placeholder="Выберите причину"
-            @select="$v.$reset()"
-          />
-        </b-form-group>
-
-        <b-form-group
-          v-if="form.reasonId === 0"
-          class="default-form-group"
-          label="Комментарий:"
-          label-for="textarea-reason"
-        >
-          <b-form-textarea
-            v-model="form.comment"
-            id="textarea-reason"
-            :state="$v.form.comment.$error ? false : null"
-            class="form-control-default"
-            placeholder="Напишите причину отключение"
+            :disabled="loading"
+            :custom-label="customLabelLevels"
+            placeholder="Выберите уровень наценки"
           />
         </b-form-group>
       </b-form>
@@ -74,13 +69,14 @@
       <div class="d-flex align-items-center justify-content-between w-100">
         <b-button
           type="submit"
-          form="form-reasons"
+          form="form-rock"
           class="btn--default"
           variant="primary"
           :disabled="loading"
         >
-          Save
+          Apply
         </b-button>
+
         <b-button
           class="btn--default"
           variant="outline-secondary"
@@ -96,9 +92,9 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { validationMixin } from 'vuelidate';
 
-import { required, requiredIf } from 'vuelidate/lib/validators';
+import { validationMixin } from 'vuelidate';
+import { required } from 'vuelidate/lib/validators';
 
 import { MODAL_CLOSE } from '@/constants/modals/modal-event-types';
 
@@ -109,19 +105,17 @@ import { SUCCESS, DANGER } from '@/constants/alert/alert-types';
 
 import { UPDATE_TABLE } from '@/constants/store/product-list/action-types';
 
+import { LEVELS_LIST } from '@/constants/levels-list';
+
 export default {
-  name: 'ModalStatusReasons',
+  name: 'ModalRock',
 
   mixins: [validationMixin],
 
   validations: {
     form: {
-      reasonId: { required },
-      comment: {
-        required: requiredIf(function () {
-          return this.form.reasonId === 0;
-        }),
-      },
+      rock: { required },
+      level: { required },
     },
   },
 
@@ -144,31 +138,28 @@ export default {
 
   data: () => ({
     form: {
-      checked: false,
-      reasonId: null,
-      comment: null,
+      rock: null,
+      level: null,
     },
+
+    levelsList: LEVELS_LIST,
   }),
 
   computed: {
-    ...mapState('reasons', {
-      statusReasons: (state) => state.statusReasons,
+    ...mapState('product', {
+      loading: (state) => state.loading,
     }),
 
     ...mapState('productList', {
       selectedRows: (state) => state.table.selectedRows,
     }),
 
-    ...mapState('product', {
-      loading: (state) => state.loading,
-    }),
-
-    statusReasonsOptions() {
-      return this.statusReasons.map((item) => item.id);
-    },
-
     selectedRowsIds() {
       return (this.selectedRows || []).map((item) => item.id);
+    },
+
+    levelsOptions() {
+      return this.levelsList.map((item) => item.id);
     },
   },
 
@@ -176,17 +167,30 @@ export default {
     ...mapActions('product', [UPDATE_PRODUCT]),
     ...mapActions('productList', [UPDATE_TABLE]),
 
+    closeHandler(callback) {
+      const typeCallback = callback.vueTarget
+        ? callback.vueTarget.hide
+        : callback;
+
+      this.$bus.$emit(MODAL_CLOSE, typeCallback);
+    },
+
+    customLabelLevels(id) {
+      const option = this.levelsList.find((item) => item.id === id);
+
+      return option?.name || '';
+    },
+
     async applyFormHandler(hideCallback) {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         try {
           const formData = new FormData();
 
-          formData.append('reasonId', this.form.reasonId);
-          this.form.comment && formData.append('comment', this.form.comment);
-          this.form.checked && formData.append('checked', 1);
           formData.append('type', this.customProps.type);
-          formData.append('isDisabled', 'no');
+          formData.append('enable', this.customProps.checked ? 1 : 0);
+          formData.append('rock', this.form.rock);
+          formData.append('level', this.form.level);
 
           if (this.customProps.isMassUpdate) {
             this.selectedRowsIds.forEach((id) => {
@@ -211,6 +215,7 @@ export default {
             content: 'Successfully updated product',
           });
 
+          this.$v.$reset();
           hideCallback();
         } catch (error) {
           this.$bus.$emit(ALERT_EVENT_SHOW, {
@@ -221,24 +226,6 @@ export default {
         }
       }
     },
-
-    closeHandler(callback) {
-      const typeCallback = callback.vueTarget
-        ? callback.vueTarget.hide
-        : callback;
-
-      this.$bus.$emit(MODAL_CLOSE, typeCallback);
-    },
-
-    customLabelMainReasons(id) {
-      const option = this.statusReasons.find((item) => item.id === id);
-
-      return option?.name || '';
-    },
-  },
-
-  created() {
-    this.form.reasonId = 0;
   },
 };
 </script>

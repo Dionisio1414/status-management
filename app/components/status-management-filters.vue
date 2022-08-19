@@ -9,6 +9,7 @@
         >
           <multiselect
             id="searchBy"
+            class="multiselect--ellipsis"
             :class="{ 'multiselect--error': $v.form.searchBy.$error }"
             :value="form.searchBy"
             :options="transformFieldsOptions"
@@ -34,6 +35,7 @@
 
           <multiselect
             id="genericArticleId"
+            class="multiselect--ellipsis"
             :value="form.genericArticleId"
             :options="transformCategoriesListOptions"
             :searchable="true"
@@ -47,6 +49,7 @@
 
           <multiselect
             id="isRock"
+            class="multiselect--ellipsis"
             :value="form.isRock"
             :options="transformIsRockOptions"
             :searchable="false"
@@ -60,6 +63,7 @@
 
           <multiselect
             id="isSurcharge"
+            class="multiselect--ellipsis"
             :value="form.isSurcharge"
             :options="transformSurchargeCheckedOptions"
             :searchable="false"
@@ -73,6 +77,7 @@
 
           <multiselect
             id="isPurchase"
+            class="multiselect--ellipsis"
             :value="form.isPurchase"
             :options="transformIsPurchaseOptions"
             :searchable="false"
@@ -86,6 +91,7 @@
 
           <multiselect
             id="isPattern"
+            class="multiselect--ellipsis"
             :value="form.isPattern"
             :options="transformIsPatternOptions"
             :searchable="false"
@@ -115,11 +121,14 @@
             Reset filters
           </b-button>
 
-          <div v-b-tooltip.hover title="In developing">
-            <b-button class="btn--default" variant="success" disabled>
-              Export
-            </b-button>
-          </div>
+          <b-button
+            class="btn--default"
+            variant="success"
+            :disabled="loading"
+            @click="exportProductsHandler"
+          >
+            Export
+          </b-button>
         </b-form>
       </b-col>
     </b-row>
@@ -128,6 +137,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { saveAs } from 'file-saver';
+
 import { validationMixin } from 'vuelidate';
 
 import { requiredIf } from 'vuelidate/lib/validators';
@@ -138,6 +149,7 @@ import {
   UPDATE_FORM,
   SUBMIT_FILTERS,
   RESET_FILTERS,
+  EXPORT_PRODUCTS,
 } from '@/constants/store/main-filters/action-types';
 
 import { ALERT_EVENT_SHOW } from '@/constants/alert/alert-event-types';
@@ -172,7 +184,7 @@ export default {
   },
 
   computed: {
-    ...mapState('mainFilters', ['form']),
+    ...mapState('mainFilters', ['form', 'file']),
 
     isChangeFilters() {
       return Object.values(this.form).some((field) => field !== null);
@@ -180,7 +192,42 @@ export default {
   },
 
   methods: {
-    ...mapActions('mainFilters', [UPDATE_FORM, SUBMIT_FILTERS, RESET_FILTERS]),
+    ...mapActions('mainFilters', [
+      UPDATE_FORM,
+      SUBMIT_FILTERS,
+      RESET_FILTERS,
+      EXPORT_PRODUCTS,
+    ]),
+
+    async exportProductsHandler() {
+      try {
+        await this[EXPORT_PRODUCTS]();
+
+        this.downloadXlsxFile();
+
+        this.$bus.$emit(ALERT_EVENT_SHOW, {
+          variant: SUCCESS,
+          show: true,
+          content: 'Export was successfully',
+        });
+      } catch (error) {
+        this.$bus.$emit(ALERT_EVENT_SHOW, {
+          variant: DANGER,
+          show: true,
+          content: error?.message,
+        });
+      }
+    },
+
+    downloadXlsxFile() {
+      const file = new Blob([this.file], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+      });
+
+      saveAs(file, 'articles-sheet.xlsx', {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+      });
+    },
 
     async submitFormHandler() {
       this.$v.$touch();
@@ -188,6 +235,8 @@ export default {
       if (!this.$v.$invalid) {
         try {
           await this[SUBMIT_FILTERS]();
+
+          this.$v.$reset();
 
           this.$bus.$emit(ALERT_EVENT_SHOW, {
             variant: SUCCESS,
@@ -212,6 +261,8 @@ export default {
       try {
         await this[RESET_FILTERS]();
         await this[SUBMIT_FILTERS]();
+
+        this.$v.$reset();
 
         this.$bus.$emit(ALERT_EVENT_SHOW, {
           variant: SUCCESS,

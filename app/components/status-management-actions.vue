@@ -27,8 +27,9 @@
                     modalName: modalAction,
                     show: true,
                     customProps: {
-                      title: 'Запустить включение на сайте',
-                      description: 'Запустить включение на сайте?',
+                      title: 'Запустить включение на сайте <b>На скине</b>',
+                      description:
+                        'Запустить включение на сайте <b>На скине</b>?',
                       type: 'isStatus',
                       checked: true,
                       isMassUpdate: true,
@@ -44,7 +45,7 @@
                     modalName: modalStatusReasons,
                     show: true,
                     customProps: {
-                      title: 'Заупустить отключение на сайте',
+                      title: 'Заупустить отключение на сайте <b>На скине</b>',
                       type: 'isStatus',
                       checked: true,
                       isMassUpdate: true,
@@ -67,13 +68,14 @@
               <b-dropdown-item
                 @click="
                   $bus.$emit('modal::show', {
-                    modalName: modalAction,
+                    modalName: modalRock,
                     show: true,
                     customProps: {
                       title: 'Запустить включение <b>Неликвид</b>',
                       description: 'Запустить включение <b>Неликвид</b>?',
                       type: 'isRock',
                       checked: true,
+                      isMassUpdate: true,
                     },
                   })
                 "
@@ -90,6 +92,7 @@
                       description: 'Запустить отключение <b>Неликвид</b>?',
                       type: 'isRock',
                       checked: false,
+                      isMassUpdate: true,
                     },
                   })
                 "
@@ -228,25 +231,6 @@
             </b-dropdown>
           </span>
 
-          <b-button
-            class="btn--default rounded-0 bg-transparent"
-            style="color: #000; line-height: 1; padding: 0.3rem 0.7rem"
-            :disabled="loading || !selectedRows.length"
-            @click="
-              $bus.$emit('modal::show', {
-                modalName: modalAction,
-                show: true,
-                customProps: {
-                  title: 'Запустить перегенерацию цен',
-                  description: 'Запустить перегенерацию цен?',
-                  type: 'prices',
-                },
-              })
-            "
-          >
-            Перегенерировать цены
-          </b-button>
-
           <template v-if="!selectedRows.length">
             <b-tooltip
               v-for="val in actionTypes"
@@ -287,6 +271,7 @@ import {
   MODAL_ACTION,
   MODAL_STATUS_REASONS,
   MODAL_CANCELING_REASONS,
+  MODAL_ROCK,
 } from '@/constants/modals/modal-ids.js';
 
 export default {
@@ -305,6 +290,7 @@ export default {
     modalAction: MODAL_ACTION,
     modalStatusReasons: MODAL_STATUS_REASONS,
     modalCancelingReason: MODAL_CANCELING_REASONS,
+    modalRock: MODAL_ROCK,
 
     actionTypes: [
       'isStatus',

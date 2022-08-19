@@ -1,5 +1,7 @@
-import ApiService from '@/services/api-service.js';
 import cloneDeep from 'lodash.clonedeep';
+
+import ApiService from '@/services/api-service.js';
+import removeNullValues from '@/utils/remove-null-values.js';
 
 import {
   GET_PRODUCTS,
@@ -10,12 +12,16 @@ import {
   UPDATE_FORM,
   SUBMIT_FILTERS,
   RESET_FILTERS,
+  EXPORT_PRODUCTS,
 } from '@/constants/store/main-filters/action-types';
 import {
   GET_CATEGORIES_DATA,
   UPDATE_FORM_VALUE,
   RESET_FILTERS_VALUE,
+  UPDATE_FILE_VALUE,
 } from '@/constants/store/main-filters/mutation-types';
+
+import { SET_LOADING } from '@/constants/store/mutation-types';
 
 import { API_STARK_URL } from '@/constants/api';
 import { DEFAULT_MAIN_FILTER } from '@/constants/default-main-filters';
@@ -55,6 +61,21 @@ export default {
     );
 
     commit(RESET_FILTERS_VALUE, cloneDeep(DEFAULT_MAIN_FILTER));
+  },
+
+  async [EXPORT_PRODUCTS]({ commit, state }) {
+    try {
+      const params = removeNullValues(state.form);
+      commit(SET_LOADING, true, { root: true });
+
+      const data = await new ApiService(API_STARK_URL, 'blob').exportProducts(
+        params
+      );
+
+      commit(UPDATE_FILE_VALUE, data);
+    } finally {
+      commit(SET_LOADING, false, { root: true });
+    }
   },
 
   [UPDATE_FORM]({ commit }, payload) {

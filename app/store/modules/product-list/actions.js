@@ -34,12 +34,13 @@ export default {
     }
   },
 
-  async [REGENERATE_PRICE_PRODUCT]({ commit }, id) {
+  async [REGENERATE_PRICE_PRODUCT]({ commit, dispatch }, id) {
     try {
       commit(SET_LOADING, true, { root: true });
       await new ApiService(API_AJAX_PRODUCT_STARK_URL).regenerateProductPrice(
         id
       );
+      await dispatch(GET_PRODUCTS);
     } finally {
       commit(SET_LOADING, false, { root: true });
     }

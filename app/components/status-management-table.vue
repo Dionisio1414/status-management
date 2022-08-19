@@ -49,7 +49,7 @@
                     checked: Boolean(data.item.status) ? false : true,
                     starkId: data.item.id,
                     articleId: data.item.articleId,
-                    title: data.item.articleNo,
+                    title: `Отключение на сайте: ${data.item.articleNo}`,
                   })
                 "
               >
@@ -312,6 +312,7 @@
                     checked: Boolean(+data.item.isRock) ? false : true,
                     starkId: data.item.id,
                     articleId: data.item.articleId,
+                    title: 'Метка <b>Неликвид</b>',
                   })
                 "
               />
@@ -415,6 +416,7 @@ import {
   MODAL_CANCELING_REASONS,
   MODAL_LOGS,
   MODAL_STATUS_REASONS,
+  MODAL_ROCK,
 } from '@/constants/modals/modal-ids';
 
 import { ALERT_EVENT_SHOW } from '@/constants/alert/alert-event-types';
@@ -458,6 +460,7 @@ export default {
     modalCancelingReasonName: MODAL_CANCELING_REASONS,
     modalLogsName: MODAL_LOGS,
     modalStatusReasons: MODAL_STATUS_REASONS,
+    modalRock: MODAL_ROCK,
   }),
 
   computed: {
@@ -525,7 +528,6 @@ export default {
     onDisableModalHandler(data, formData) {
       switch (data.type) {
         case 'isPurchase':
-        case 'isRock':
           this.$bus.$emit(MODAL_SHOW, {
             modalName: this.modalCancelingReasonName,
             show: true,
@@ -535,6 +537,13 @@ export default {
         case 'isStatus':
           this.$bus.$emit(MODAL_SHOW, {
             modalName: this.modalStatusReasons,
+            show: true,
+            customProps: { ...data },
+          });
+          break;
+        case 'isRock':
+          this.$bus.$emit(MODAL_SHOW, {
+            modalName: this.modalRock,
             show: true,
             customProps: { ...data },
           });
@@ -550,14 +559,25 @@ export default {
       formData.append('type', data.type);
       formData.append('id', data.starkId);
 
-      if (data.checked) {
+      if (data.checked && data.type !== 'isRock') {
         formData.append('enable', 1);
         this.updateProductHandler(formData);
       }
 
-      if (!data.checked) {
+      if (data.checked && data.type === 'isRock') {
+        formData.append('enable', 1);
+        this.onDisableModalHandler(data, formData);
+      }
+
+      if (!data.checked && data.type !== 'isRock') {
         formData.append('enable', 0);
         this.onDisableModalHandler(data, formData);
+      }
+
+      if (!data.checked && data.type === 'isRock') {
+        formData.append('enable', 0);
+
+        this.updateProductHandler(formData);
       }
     },
 

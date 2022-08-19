@@ -8,7 +8,7 @@ import {
 
 export default {
   [GET_PRODUCTS_DATA](state, { products, productsCount }) {
-    state.products = Object.values(products);
+    state.products = Object.values(products || []);
     state.productsCount = productsCount;
     state.table.totalPages = Math.ceil(
       productsCount / state.table.params.perPage

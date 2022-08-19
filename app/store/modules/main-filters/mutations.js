@@ -2,6 +2,7 @@ import {
   GET_CATEGORIES_DATA,
   UPDATE_FORM_VALUE,
   RESET_FILTERS_VALUE,
+  UPDATE_FILE_VALUE,
 } from '@/constants/store/main-filters/mutation-types';
 
 export default {
@@ -15,5 +16,9 @@ export default {
 
   [RESET_FILTERS_VALUE](state, payload) {
     state.form = payload;
+  },
+
+  [UPDATE_FILE_VALUE](state, payload) {
+    state.file = payload;
   },
 };

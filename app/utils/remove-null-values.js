@@ -4,7 +4,7 @@ export default (value) => {
   const copyValue = cloneDeep(value);
 
   Object.keys(copyValue).forEach((key) => {
-    if (copyValue[key] === null) {
+    if (!copyValue[key]) {
       delete copyValue[key];
     }
   });
