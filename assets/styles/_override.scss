@@ -1,0 +1,225 @@
+.form-control-default {
+  font-size: $base-font-size;
+  border-radius: $border-radius;
+
+  &:focus {
+    box-shadow: none;
+    border-color: $gray-400;
+  }
+
+  &:disabled {
+    background: transparent;
+    pointer-events: all;
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.custom-file-default {
+  .custom-file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border-radius: 0;
+    margin-bottom: 0;
+    height: 20rem;
+    border: 2px dashed $gray-400;
+    cursor: pointer;
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.btn {
+  &--default {
+    font-size: $base-font-size;
+    border-radius: $border-radius;
+  }
+
+  &.disabled,
+  &:disabled {
+    pointer-events: all;
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.btn-group { 
+  &:not(.btn-group-default) .dropdown-toggle::after {
+    display: none;
+  }
+}
+
+.main-menu-list .dropdown-toggle::after {
+  display: none;
+}
+
+.pagination-default {
+  height: auto;
+  .page-link {
+    font-size: $base-font-size;
+    padding: .5rem 1.1rem;
+    line-height: 1.25;
+    border-radius: 0;
+  }
+}
+
+.table-data {
+  position: relative;
+  thead, tbody, tfoot {
+    > tr {
+      > th, 
+      > td {
+        line-height: 1;
+        vertical-align: middle;
+        font-size: 1.4rem;
+        padding: 1rem;
+      }
+    }
+  }
+
+  thead>tr>th { white-space: nowrap; }
+
+  &--disabled {
+    opacity: .5;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      cursor: now-allowed;
+      z-index: 999;
+    }
+  }
+}
+
+.table-responsive {
+  position: relative;
+  &--radius {
+    border-radius: $border-radius;
+  }
+}
+
+.table-responsive {
+  overflow-y: hidden; 
+}
+
+.btn-group-default .dropdown-toggle {
+  border-radius: 0;
+  line-height: 1;
+  padding: .3rem .7rem;
+}
+
+.modal-open .modal.fade { opacity: 1 }
+
+.modal-wrapper {
+  .modal {
+    &-dialog {
+      margin: 1.75rem auto;
+    }
+    &-content {
+      font-size: $base-font-size;
+    }
+    &-body {
+      position: static;
+    }
+  }
+
+  h5.modal-title {
+    font-size: 1.5rem;
+  }
+}
+
+.b-overlay-wrap {
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+  &--loading {
+    z-index: 20;
+  }
+}
+
+.default-checkbox, 
+.default-radio  {
+  line-height: 1;
+  font-size: 0;
+  padding-left: 0;
+  input {
+    position: static;
+    margin: 0;
+    + label {
+      font-size: $base-font-size;
+      margin: 0;
+    }
+  }
+
+  &--inline {
+    display: flex;
+    margin-bottom: 1rem;
+    input {
+      margin-right: 1.5rem;
+    }
+  }
+
+  &--order {
+    display: flex;
+    .form-check-input {
+      order: 1;
+      margin-left: 1rem;
+    }
+  }
+}
+
+.badge {
+  &--default {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+}
+
+.b-tooltip {
+  font-size: $base-font-size;
+}
+
+.default-popover.bs-popover-right > .arrow {
+  left: calc(-1.65rem - 1px);
+}
+
+.alert-default {
+  position: fixed;
+  font-size: $base-font-size;
+  top: 3rem;
+  right: 1rem;
+  z-index: 9999;
+  border-radius: $border-radius;
+  min-width: 30rem;
+  .close {
+    font-size: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.b-skeleton-text { height: 1.5rem; }
+
+.default-form-group label { font-size: 1.4rem; }
+
+.b-table-details .table { margin-bottom: 0; }
+
+.custom-switch {
+  .custom-control-label {
+    cursor: pointer;
+  }
+}
+
+.breadcrumb--default {
+  .breadcrumb-item.active {
+    color: $success;
+  }
+}
